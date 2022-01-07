@@ -1,6 +1,16 @@
 include("constants.jl")
 
-"""Performs bracketing to determine the initial bounds on a minimum."""
+"""
+Performs bracketing to determine the initial bounds on a minimum.
+
+Arguments:
+    fn: objective function
+    δ: step size
+    limit: maximum number of iterations
+
+Returns:
+    3-element array if successful, else nothing
+"""
 function bracket(fn, δ, limit=100)
     α = 0
     q = 0

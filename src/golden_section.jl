@@ -5,6 +5,16 @@ include("types.jl")
 """
 Performs the Golden Search optimization method. Includles bracketing to
 determine initial bounds on the minimum.
+
+Arguments:
+    fn: objective function
+    bounds: (optional) user-provided [lower, upper] starting boundary
+    δ: step size
+    ϵ: tolerance
+    limit: maximum number of iterations
+
+Returns:
+    `Response` struct if successful, else `nothing`
 """
 function golden_section(fn; bounds=nothing, δ=.01, ϵ=.0001, limit=1000)
     if !isnothing(bounds)
