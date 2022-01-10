@@ -8,7 +8,8 @@ using DesignAutomation
     expected = DesignAutomation.Response(
         4.000009596893628,
         9.210036731151505e-11,
-        23
+        23,
+        true
     )
 
     @test golden_section(fn) == expected
@@ -17,7 +18,8 @@ using DesignAutomation
     expected = DesignAutomation.Response(
         1.3863011401228174,
         0.4548225556123473,
-        22
+        22,
+        true
     )
 
     @test golden_section(fn; δ=.5) == expected
@@ -27,7 +29,8 @@ using DesignAutomation
     expected = DesignAutomation.Response(
         1.4309864897989497,
         5.238362559941962,
-        22
+        22,
+        true
     )
 
     @test golden_section(fn; δ=.5) == expected
@@ -36,7 +39,8 @@ using DesignAutomation
     expected = DesignAutomation.Response(
         1.4309790387227168,
         5.238362556883395,
-        24
+        24,
+        true
     )
 
     @test golden_section(
@@ -47,7 +51,8 @@ using DesignAutomation
     expected = DesignAutomation.Response(
         4.712370276668626, # 3π/2
         -0.9999999998250855,
-        24
+        24,
+        true
     )
 
     @test golden_section(fn) == expected

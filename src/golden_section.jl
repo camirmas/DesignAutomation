@@ -35,10 +35,11 @@ function golden_section(fn; bounds=nothing, δ=.01, ϵ=.0001, limit=1000)
         f_α_a = fn(α_a)
         f_α_b = fn(α_b)
 
+        # check for convergence
         if abs(α_u - α_l) < ϵ
             x = (α_u + α_l) / 2
 
-            return Response(x, fn(x), i)
+            return Response(x, fn(x), i, true)
         end
 
         if f_α_a < f_α_b

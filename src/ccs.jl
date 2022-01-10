@@ -5,7 +5,7 @@ using LineSearches, Optim
 Implements the Cyclic Coordinate Search optimization method. Uses a Hager-Zhang
 linesearch to determine step size.
 """
-function ccs(fn, x0, ϵ=.001, max_iter=100)
+function ccs(fn, x0; ϵ=.001, max_iter=100)
     algo_hz = Newton(linesearch = HagerZhang())
     i = 1
     k = 0
@@ -35,8 +35,11 @@ function ccs(fn, x0, ϵ=.001, max_iter=100)
         i += 1
 
         if norm(x_new-x) < ϵ
-            return Response(x_new, f_new, k)
+            return Response(x_new, f_new, k, true)
         end
-
     end
+
+    println("Maximum iterations reached.")
+    x, fx = results[end]
+    return Response(x, fx, k, false)
 end
