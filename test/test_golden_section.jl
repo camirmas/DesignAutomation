@@ -45,7 +45,7 @@ using DesignAutomation
     # sin
     fn(x) = sin(x)
     expected = DesignAutomation.Response(
-        4.712370276668626, # 3*pi/2
+        4.712370276668626, # 3π/2
         -0.9999999998250855,
         24
     )

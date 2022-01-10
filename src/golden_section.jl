@@ -21,7 +21,12 @@ function golden_section(fn; bounds=nothing, δ=.01, ϵ=.0001, limit=1000)
         α_l, α_u = bounds
         α_a = α_l + (1 - 1/G)*(α_u - α_l)
     else
-        α_l, α_a, α_u = bracket(fn, δ)
+        brackets = bracket(fn, δ)
+
+        if isnothing(brackets)
+            return
+        end
+        α_l, α_a, α_u = brackets
     end
 
     α_b = α_l + 1/G*(α_u - α_l)
