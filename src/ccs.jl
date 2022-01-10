@@ -1,12 +1,12 @@
 using LinearAlgebra
-
-include("golden_section.jl")
+using LineSearches, Optim
 
 """
 Implements the Cyclic Coordinate Search optimization method. Uses a Golden
 Section line search to determine step size.
 """
-function ccs(fn, x0, ϵ=.001, max_iter=20)
+function ccs(fn, x0, ϵ=.001, max_iter=100)
+    algo_hz = Newton(linesearch = HagerZhang())
     k = 0
     n = length(x0)
     x = copy(x0)
@@ -18,14 +18,11 @@ function ccs(fn, x0, ϵ=.001, max_iter=20)
             d = zeros(n)
             d[i] = 1
 
-            α_fn(α) = fn(x + α * d)
-            res = golden_section(α_fn)
+            α_fn(α) = fn(x + α .* d)
+            res = Optim.optimize(α_fn, x, method=algo_hz)
 
-            # golden section found a step size that improves x
-            if !isnothing(res)
-                α = res.minimizer
-                x += α * d
-            end
+            α = res.minimizer
+            x += α .* d
 
             fx = fn(x)
 
