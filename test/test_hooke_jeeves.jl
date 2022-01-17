@@ -19,6 +19,14 @@ using DesignAutomation
     @test res.iterations == 99
     @test res.converged == true
 
+    x0 = [0., 0.]
+    res = hooke_jeeves(fn, x0; r=.5, h0=.5, max_iter=24)
+
+    @test res.minimizer == [1.5, 3.25]
+    @test res.minimum == 4.00390625
+    @test res.iterations == 24
+    @test res.converged == false
+
     x0 = [2., 9.]
     res = hooke_jeeves(fn, x0; r=.5, h0=.5, max_iter=24)
     
