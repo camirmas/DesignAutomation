@@ -1,6 +1,6 @@
 # DesignAutomation :robot:
 
- > Accessible implementations of optimization algorithms 
+ > Implementations of optimization algorithms for OSU ME 617 (Design Automation)
 
 ## Installation
 
@@ -23,10 +23,5 @@ res.iterations # 23
 Current features:
 - bracketing (Golden Ratio)
 - Golden Section search
-
-## Todos
-
-- [ ] Gracefully handle error conditions in case of bracketing failure
-- [ ] Generate documentation from function docstrings
-- [ ] Publish to [General Registry](https://github.com/JuliaRegistries/General)
-
+- Cyclic Coordinate Search (CCS)
+- Hooke & Jeeves search
