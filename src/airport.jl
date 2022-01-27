@@ -11,6 +11,13 @@ struct AirportNode
     matrix
     depth::Int
     terminals::Int
+    g::Int
+    h::Int
+    f::Int
+
+    function AirportNode(matrix, depth, terminals; g=0, h=0)
+        return new(matrix, depth, terminals, g, h, g+h)
+    end
 end
 
 function is_goal(node::AirportNode, terminals)
@@ -90,7 +97,8 @@ function transition_walkway(node, (row, col))
 
     new_m = copy(node.matrix)
     new_m[row, col] = 1
-    new_node = AirportNode(new_m, node.depth+1, node.terminals)
+    new_node = AirportNode(
+        new_m, node.depth+1, node.terminals; g=node.g+1, h=node.h)
 
     # check the new_m for rule 1 violations
     # new node cannot be directly next to a 2
@@ -113,7 +121,8 @@ function transition_terminal(node, (row, col))
 
     new_m = copy(node.matrix)
     new_m[row, col] = 2
-    new_node = AirportNode(new_m, node.depth+1, node.terminals+1)
+    new_node = AirportNode(
+        new_m, node.depth+1, node.terminals+1; g=node.g, h=node.h-1)
 
     return new_node
 end
@@ -167,6 +176,68 @@ function airport_dfs(terminals, seed_file, max_depth)
                     end
 
                     push!(nodes, new_node)
+                end
+            end
+        end
+    end
+    println("failed. final state:\n$(last_node.matrix)")
+end
+
+"""
+A* Search Airport Terminal solver.
+"""
+function airport_a_star(terminals, seed_file, max_depth)
+    s_fns = [
+        transition_terminal,
+        transition_walkway
+    ]
+    nodes = PriorityQueue{AirportNode, Int}()
+    initial_state = read_csv(seed_file)
+    println("Running Airport Terminal Solver...")
+    seed = AirportNode(initial_state, 1, 0; h=terminals, g=0)
+    enqueue!(nodes, seed, seed.f)
+    last_node = seed
+    i = 0
+
+    while !isempty(nodes)
+        node = dequeue!(nodes)
+        last_node = node
+        state = node.matrix
+
+        i += 1
+        if i % 100000 == 0
+            println("\n\nIterations: $(i). Stack size: $(length(nodes))")
+        end
+
+        if node.depth > max_depth
+            continue
+        end
+
+        is_goal(node) = node.terminals == terminals
+
+        if is_goal(node)
+            res = """
+                Solution found! Iterations: $(i). g: $(node.g). h: $(node.h). \
+                Depth: $(node.depth)
+            """
+            println(res)
+            display(node.matrix)
+            return node
+        end
+
+        # Run walkway and terminal transition functions on current matrix
+        # and add valid nodes to the stack.
+        rows, cols = size(state)
+        for row=1:rows
+            for col=1:cols
+                for fn in s_fns
+                    new_node = fn(node, (row, col))    
+
+                    if isnothing(new_node)
+                        continue
+                    end
+
+                    enqueue!(nodes, new_node, new_node.f)
                 end
             end
         end

@@ -15,6 +15,8 @@ using DesignAutomation
 end
 
 @testset "example A" begin
-    node = DesignAutomation.airport_dfs(3, "../src/data/A.csv", 10)
-    print(node.matrix)
+    # node = DesignAutomation.airport_dfs(3, "../src/data/A.csv", 10)
+    # print(node.matrix)
+
+    node = DesignAutomation.airport_a_star(4, "../src/data/B.csv", 10)
 end
