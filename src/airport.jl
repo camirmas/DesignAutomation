@@ -1,7 +1,7 @@
 using CSV, DataFrames
 using DataStructures
 
-function read_csv(filename)
+function _read_csv(filename)
     println("Reading CSV...")
     m = CSV.read(filename, DataFrame; header=false)
     return Matrix{Int}(m)
@@ -20,12 +20,7 @@ struct AirportNode
     end
 end
 
-function is_goal(node::AirportNode, terminals)
-    # check if we have the proper number of terminals
-    return node.terminals == terminals
-end
-
-function get_neighbors(matrix, (row, col); diagonal=true)
+function _get_neighbors(matrix, (row, col); diagonal=true)
     if diagonal
         neighbors = []
         for nrow=row-1:row+1
@@ -60,7 +55,7 @@ function check_rule_1(node, (row, col))
         return false
     end
 
-    neighbors = get_neighbors(node.matrix, (row, col); diagonal=false)
+    neighbors = _get_neighbors(node.matrix, (row, col); diagonal=false)
 
     # we're looking for [0, 0, 0, 1]
     return sort(neighbors) == [0, 0, 0, 1]
@@ -76,7 +71,7 @@ function check_rule_2(node, (row, col))
         return false
     end
 
-    neighbors = get_neighbors(node.matrix, (row, col))
+    neighbors = _get_neighbors(node.matrix, (row, col))
 
     return 1 in neighbors
 end
@@ -102,7 +97,7 @@ function transition_walkway(node, (row, col))
 
     # check the new_m for rule 1 violations
     # new node cannot be directly next to a 2
-    neighbors = get_neighbors(new_node.matrix, (row, col); diagonal=false)
+    neighbors = _get_neighbors(new_node.matrix, (row, col); diagonal=false)
 
     if 2 in neighbors
         return
@@ -136,7 +131,7 @@ function airport_dfs(terminals, seed_file, max_depth)
         transition_walkway
     ]
     nodes = Stack{AirportNode}()
-    initial_state = read_csv(seed_file)
+    initial_state = _read_csv(seed_file)
     println("Running Airport Terminal Solver...")
     seed = AirportNode(initial_state, 1, 0)
     push!(nodes, seed)
@@ -157,9 +152,9 @@ function airport_dfs(terminals, seed_file, max_depth)
             continue
         end
 
-        is_goal(node) = node.terminals == terminals
+        _is_goal(node) = node.terminals == terminals
 
-        if is_goal(node)
+        if _is_goal(node)
             return node
         end
 
@@ -192,7 +187,7 @@ function airport_a_star(terminals, seed_file, max_depth)
         transition_walkway
     ]
     nodes = PriorityQueue{AirportNode, Int}()
-    initial_state = read_csv(seed_file)
+    initial_state = _read_csv(seed_file)
     println("Running Airport Terminal Solver...")
     seed = AirportNode(initial_state, 1, 0; h=terminals, g=0)
     enqueue!(nodes, seed, seed.f)
@@ -206,16 +201,16 @@ function airport_a_star(terminals, seed_file, max_depth)
 
         i += 1
         if i % 100000 == 0
-            println("\n\nIterations: $(i). Stack size: $(length(nodes))")
+            println("\n\nIterations: $(i). Stack size: $(length(nodes)). g: $(node.g), h: $(node.h)")
         end
 
         if node.depth > max_depth
             continue
         end
 
-        is_goal(node) = node.terminals == terminals
+        _is_goal(node) = node.terminals == terminals
 
-        if is_goal(node)
+        if _is_goal(node)
             res = """
                 Solution found! Iterations: $(i). g: $(node.g). h: $(node.h). \
                 Depth: $(node.depth)
