@@ -6,7 +6,8 @@ include("ccs.jl")
 include("hooke_jeeves.jl")
 include("uninformed_search.jl")
 include("airport.jl")
+include("exhaustive_search.jl")
 
-export bracket, golden_section, ccs, hooke_jeeves, dfs, bfs
+export bracket, golden_section, ccs, hooke_jeeves, dfs, bfs, exhaustive_search
 
 end # module
