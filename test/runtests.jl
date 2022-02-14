@@ -7,7 +7,8 @@ test_modules = [
     "test_hooke_jeeves",
     "test_uninformed_search",
     # "test_airport",
-    "test_exhaustive_search"
+    "test_exhaustive_search",
+    "test_random_hill"
 ]
 
 for mod in test_modules

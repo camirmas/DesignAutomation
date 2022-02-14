@@ -3,8 +3,20 @@ Performs an exhaustive search for a function using a discretized search space.
 
 The total number of function calls will be d^n, where d is the number of
 dimensions, and n is the length of the discretized search space.
+
+    Args:
+      fn (Function): Objective function
+      x_range (Array): Range of x values to explore
+      dimensions (Int64): Dimensionality of search space
+      spacing (Float64, optional): Discretization
+      verbose (Bool, optional): Print results
+
+    Returns:
+      Tuple: (x, fx, f_calls) where x is the minimizer, fx is the minimum, and
+      f_calls is the number of function calls made.
 """
-function exhaustive_search(fn, x_range, dimensions; spacing=.1, verbose=true)
+function exhaustive_search(fn::Function, x_range::Array, dimensions::Int64;
+                           spacing=.1, verbose=true)
     f_calls = 1
 
     i = 1
@@ -33,7 +45,7 @@ function exhaustive_search(fn, x_range, dimensions; spacing=.1, verbose=true)
         f_calls += 1
 
         if verbose && (f_calls % 1000000 == 0)
-            println("Iterations: $(f_calls)\tx*: $(x_star)\tf*: $(f_star)")
+            println("Iterations: $(f_calls)\nx*: $(x_star)\nf*: $(f_star)\n")
         end
 
         if fnew < f_star
@@ -42,6 +54,10 @@ function exhaustive_search(fn, x_range, dimensions; spacing=.1, verbose=true)
         end
 
         i = 1
+    end
+
+    if verbose
+        println("Iterations: $(f_calls)\nx*: $(x_star)\nf*: $(f_star)\n")
     end
 
     return x_star, f_star, f_calls
